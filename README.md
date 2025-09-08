@@ -28,3 +28,16 @@
 git clone https://github.com/fkirewold/flutter_map_integration.git
 cd flutter_map_integration
 
+### 2. Install dependencies
+```bash
+flutter pub get
+
+### 3. Run the app
+For emulator:
+```bash
+flutter run
+
+For physical device: enable USB debugging or connect over Wi-Fi.
+
+**📄 License**
+This project is open source and available under the MIT License.
