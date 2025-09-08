@@ -1,16 +1,30 @@
-# flutter_map_integration
+# Flutter OpenStreetMap Tracker
 
-A new Flutter project.
+**Flutter mobile application** for learning and experimenting with map integration. This app demonstrates how to use **OpenStreetMap (OSM)** in a Flutter project to track and display user location with basic map interactions like zooming and panning.
 
-## Getting Started
+---
+## 📌 Features
+- Display OpenStreetMap using Flutter.
+- Show user's current location on the map.
+- Basic zoom in/out functionality.
+- Panning and navigation on the map.
+- Training project to understand map integration in Flutter.
 
-This project is a starting point for a Flutter application.
+---
 
-A few resources to get you started if this is your first Flutter project:
+## 🛠️ Technologies & Packages
+- **Flutter** – Cross-platform mobile framework.
+- **Dart** – Programming language.
+- **flutter_map** – For rendering OpenStreetMap tiles.
+- **location** – To get user’s GPS location.
+- **latlong2** – Handling geographic coordinates.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🚀 Getting Started
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/yourusername/flutter-osm-tracker.git
+cd flutter-osm-tracker
+
