@@ -27,7 +27,7 @@
 ```bash
 git clone https://github.com/fkirewold/flutter_map_integration.git
 cd flutter_map_integration
-
+ ``` 
 ### 2. Install dependencies
 ```bash
 flutter pub get
@@ -36,7 +36,7 @@ flutter pub get
 For emulator:
 ```bash
 flutter run
-
+ ``` 
 For physical device: enable USB debugging or connect over Wi-Fi.
 
 **📄 License**
