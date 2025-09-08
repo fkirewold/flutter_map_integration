@@ -25,6 +25,6 @@
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/fkirewold/flutter-osm-tracker.git
-cd flutter-osm-tracker
+git clone https://github.com/fkirewold/flutter_map_integration.git
+cd flutter_map_integration
 
