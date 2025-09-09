@@ -7,7 +7,6 @@ void main() {
   ));
 }
 
-
 class StreetMap extends StatefulWidget {
   const StreetMap({super.key});
 
