@@ -13,11 +13,11 @@ class StreetMap extends StatefulWidget {
 
 class _StreetMapState extends State<StreetMap> {
   final MapController _mapController = MapController();
-
+  LatLng? initialPostion;
   @override
   void initState() {
     super.initState();
-    _initLocation();
+    setInitialPostion();
   }
 
   @override
@@ -26,6 +26,21 @@ class _StreetMapState extends State<StreetMap> {
     super.dispose();
   }
 
+// void _centerMapOnUser() {
+//   Geolocator.getPositionStream(
+//     locationSettings: const LocationSettings(
+//       accuracy: LocationAccuracy.high,
+//       distanceFilter: 10, // updates only if user moves 10 meters
+//     ),
+//   ).listen((Position position) {
+//     print("Lat: ${position.latitude}, Lon: ${position.longitude}");
+//     _mapController.move(
+//       LatLng(position.latitude, position.longitude), // new center
+//       _mapController.camera.center.latitude, // keep current zoom
+//     );
+//     setState(() {}); // triggers FlutterMap redraw
+//   });
+// }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,10 +51,12 @@ class _StreetMapState extends State<StreetMap> {
       ),
       body: Stack(
         children: [
+        if(initialPostion==null)
+        Center(child: CircularProgressIndicator(color: Colors.blue,)),
           FlutterMap(
               mapController: _mapController,
               options: MapOptions(
-                initialCenter: const LatLng(9.03, 38.74),
+                initialCenter: initialPostion!,
                 minZoom: 3,
               ),
               children: [
@@ -49,14 +66,12 @@ class _StreetMapState extends State<StreetMap> {
                 ),
                 CurrentLocationLayer(
                   style: const LocationMarkerStyle(
-                      marker: DefaultLocationMarker(
-                        child: Icon(
-                          Icons.location_pin,
-                          color: Colors.blue,
-                        ),
-                      ),
-                      markerSize: Size(35, 35),
-                      markerDirection: MarkerDirection.heading),
+                    marker: DefaultLocationMarker(
+                      child: Icon(Icons.location_pin, color: Colors.blue),
+                    ),
+                    markerSize: Size(35, 35),
+                    markerDirection: MarkerDirection.heading,
+                  ),
                 ),
               ]),
         ],
@@ -64,8 +79,19 @@ class _StreetMapState extends State<StreetMap> {
     );
   }
 
-  Future<void> _initLocation() async {
+  Future<void> setInitialPostion() async {
+    final Position? pos = await _initLocation();
+    if(pos!=null){
+        setState(() {
+        initialPostion = LatLng(pos.latitude, pos.longitude);
+      });
+    }
+ 
+  }
+
+  Future<Position?> _initLocation() async {
     bool isServiceEnabled = await Geolocator.isLocationServiceEnabled();
+    print(isServiceEnabled);
     if (!isServiceEnabled) {
       await showDialog(
           // ignore: use_build_context_synchronously
@@ -92,12 +118,14 @@ class _StreetMapState extends State<StreetMap> {
               ],
             );
           });
-      return;
+      return null;
     }
 
     LocationPermission permission = await Geolocator.checkPermission();
+    print(permission);
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
+      print(permission);
       if (permission == LocationPermission.denied) {
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
@@ -106,7 +134,7 @@ class _StreetMapState extends State<StreetMap> {
                 "Location permission denied. Cannot show current location."),
           ),
         );
-        return;
+        return null;
       }
     }
     if (permission == LocationPermission.deniedForever) {
@@ -132,6 +160,10 @@ class _StreetMapState extends State<StreetMap> {
           ],
         ),
       );
+      return null;
     }
+    return Geolocator.getCurrentPosition(
+        locationSettings: LocationSettings(
+            accuracy: LocationAccuracy.best, distanceFilter: 10));
   }
 }
