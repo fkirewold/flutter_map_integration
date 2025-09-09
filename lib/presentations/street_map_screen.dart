@@ -37,7 +37,7 @@ class _StreetMapState extends State<StreetMap> {
     _mapController.dispose();
     _locationTextController.dispose();
     textNotifier.dispose();
-    super.dispose();
+    super.dispose(); 
   }
 
 // void _centerMapOnUser() {
@@ -119,22 +119,50 @@ class _StreetMapState extends State<StreetMap> {
                           icon: const Icon(Icons.clear, color: Colors.black),
                           onPressed: () {
                             _locationTextController.clear();
+                            setState(() => _suggestions = []);
                           },
                         )
                       : null,
                   border: InputBorder.none,
                 ),
-                onChanged: (place){
-                },
+                onChanged: _onSearchChanged,
                 onTapOutside: (event){
                   FocusScope.of(context).unfocus();
                 },
-                onSubmitted: (value) {},
+                onSubmitted: (value) async{
+                  if(value.isNotEmpty)
+                  {
+                    final LatLng? latLng= await _placeService.destinationCalculator(destination: value);
+                    if(latLng!=null)
+                    {
+                      _mapController.move(latLng, 10);
+                    }
+                  }
+                },
                    
               );
                      }
                    ),
                  ),
+                if (_suggestions.isNotEmpty)
+                      Container(
+                        margin: const EdgeInsets.only(top: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: _suggestions.length,
+                          itemBuilder: (context, index) {
+                            final place = _suggestions[index];
+                            return ListTile(
+                              title: Text(place['display_name']),
+                              onTap: () => _onSuggestionTap(place),
+                            );
+                          },
+                        ),
+                      ),
              
            ],
          ),
@@ -142,9 +170,36 @@ class _StreetMapState extends State<StreetMap> {
               
         ],
       ),
-    );
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.blue,
+        onPressed: (){},
+        child: const Icon(
+          Icons.my_location,
+          color: Colors.white,
+          size: 30,),
+    ));
   }
-
+    void _onSearchChanged(String query) async {
+    if (query.isEmpty) {
+      setState(() => _suggestions = []);
+      return;
+    }
+    final results = await _placeService.searchPlaces(query);
+    setState(() {
+      _suggestions = results;
+    });
+  }
+  void _onSuggestionTap(Map<String, dynamic> place) {
+    final lat = double.parse(place['lat']);
+    final lon = double.parse(place['lon']);
+    final position = LatLng(lat, lon);
+    _mapController.move(position, 15);
+    setState(() {
+      _suggestions = [];
+      _locationTextController.text = place['display_name'];
+    });
+    FocusScope.of(context).unfocus();
+  }
   Future<void> setInitialPostion() async {
     final Position? pos = await _initLocation();
     if(pos!=null){
@@ -167,7 +222,6 @@ class _StreetMapState extends State<StreetMap> {
   }
   Future<Position?> _initLocation() async {
     bool isServiceEnabled = await Geolocator.isLocationServiceEnabled();
-    print(isServiceEnabled);
     if (!isServiceEnabled) {
       await showDialog(
           // ignore: use_build_context_synchronously
@@ -198,10 +252,8 @@ class _StreetMapState extends State<StreetMap> {
     }
 
     LocationPermission permission = await Geolocator.checkPermission();
-    print(permission);
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
-      print(permission);
       if (permission == LocationPermission.denied) {
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
