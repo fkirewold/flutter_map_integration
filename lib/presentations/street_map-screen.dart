@@ -14,6 +14,7 @@ class StreetMap extends StatefulWidget {
 class _StreetMapState extends State<StreetMap> {
   final MapController _mapController = MapController();
   LatLng? initialPostion;
+  bool isLoading =true; 
   @override
   void initState() {
     super.initState();
@@ -51,12 +52,10 @@ class _StreetMapState extends State<StreetMap> {
       ),
       body: Stack(
         children: [
-        if(initialPostion==null)
-        Center(child: CircularProgressIndicator(color: Colors.blue,)),
           FlutterMap(
               mapController: _mapController,
               options: MapOptions(
-                initialCenter: initialPostion!,
+                initialCenter: isLoading?LatLng(9.00, 38.7):initialPostion!,
                 minZoom: 3,
               ),
               children: [
@@ -67,13 +66,16 @@ class _StreetMapState extends State<StreetMap> {
                 CurrentLocationLayer(
                   style: const LocationMarkerStyle(
                     marker: DefaultLocationMarker(
-                      child: Icon(Icons.location_pin, color: Colors.blue),
+                      child: Icon(Icons.location_pin, color: Colors.white),
                     ),
-                    markerSize: Size(35, 35),
+                    markerSize: Size(30, 30),
                     markerDirection: MarkerDirection.heading,
+                  
                   ),
                 ),
               ]),
+              if(isLoading)Center(child: CircularProgressIndicator(color: Colors.blue,),)
+              
         ],
       ),
     );
@@ -82,8 +84,16 @@ class _StreetMapState extends State<StreetMap> {
   Future<void> setInitialPostion() async {
     final Position? pos = await _initLocation();
     if(pos!=null){
+     await Future.delayed(const Duration(seconds: 3));
         setState(() {
         initialPostion = LatLng(pos.latitude, pos.longitude);
+        isLoading=false;
+      });
+      _mapController.move(initialPostion!, 12);
+    }
+    else{
+      setState(() {
+        isLoading=false;
       });
     }
  
