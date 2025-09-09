@@ -184,12 +184,14 @@ class _StreetMapState extends State<StreetMap> {
     ));
   }
     void _onSearchChanged(String query) async {
+        if (_debounce?.isActive ?? false) _debounce!.cancel();
+
     if (query.isEmpty) {
       setState(() => _suggestions = []);
       return;
     }
 
-  _debounce=Timer(const Duration(milliseconds: 300),() async{
+  _debounce=Timer(const Duration(milliseconds: 800),() async{
  final results = await _placeService.searchPlaces(query);
     if (mounted) {
       setState(() {
