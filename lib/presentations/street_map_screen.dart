@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_integration/core/constants/url_constant.dart';
@@ -23,6 +25,7 @@ class _StreetMapState extends State<StreetMap> {
   LatLng? destinationPosition;
   final TextEditingController _locationTextController=TextEditingController();
   ValueNotifier<String> textNotifier=ValueNotifier('');
+  Timer? _debounce;
   @override
   void initState() {
     super.initState();
@@ -120,6 +123,7 @@ class _StreetMapState extends State<StreetMap> {
                           onPressed: () {
                             _locationTextController.clear();
                             setState(() => _suggestions = []);
+                           _debounce?.cancel(); 
                           },
                         )
                       : null,
@@ -184,19 +188,27 @@ class _StreetMapState extends State<StreetMap> {
       setState(() => _suggestions = []);
       return;
     }
-    final results = await _placeService.searchPlaces(query);
-    setState(() {
-      _suggestions = results;
+
+  _debounce=Timer(const Duration(milliseconds: 300),() async{
+ final results = await _placeService.searchPlaces(query);
+    if (mounted) {
+      setState(() {
+        _suggestions = results;
+      });
+    }
     });
+   
   }
   void _onSuggestionTap(Map<String, dynamic> place) {
     final lat = double.parse(place['lat']);
     final lon = double.parse(place['lon']);
     final position = LatLng(lat, lon);
-    _mapController.move(position, 15);
+    _mapController.move(position, 12);
+  
     setState(() {
       _suggestions = [];
       _locationTextController.text = place['display_name'];
+      initialPosition=position;
     });
     FocusScope.of(context).unfocus();
   }
