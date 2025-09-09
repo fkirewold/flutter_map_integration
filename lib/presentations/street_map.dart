@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+
 class StreetMap extends StatefulWidget {
   const StreetMap({super.key});
 
@@ -10,7 +12,13 @@ class StreetMap extends StatefulWidget {
 }
 
 class _StreetMapState extends State<StreetMap> {
-  MapController _mapController = MapController();
+  final MapController _mapController = MapController();
+
+  @override
+  void initState() {
+    super.initState();
+    _initLocation();
+  }
 
   @override
   void dispose() {
@@ -41,17 +49,89 @@ class _StreetMapState extends State<StreetMap> {
                 ),
                 CurrentLocationLayer(
                   style: const LocationMarkerStyle(
-                    marker: DefaultLocationMarker(
-                      child: Icon(Icons.location_pin,color: Colors.blue,),
-                    ),
-                    markerSize: Size(35, 35),
-                    markerDirection: MarkerDirection.heading
-                  ),
+                      marker: DefaultLocationMarker(
+                        child: Icon(
+                          Icons.location_pin,
+                          color: Colors.blue,
+                        ),
+                      ),
+                      markerSize: Size(35, 35),
+                      markerDirection: MarkerDirection.heading),
                 ),
               ]),
         ],
       ),
-  
     );
+  }
+
+  Future<void> _initLocation() async {
+    bool isServiceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!isServiceEnabled) {
+      await showDialog(
+          // ignore: use_build_context_synchronously
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text(
+                'Enable Location',
+              ),
+              content: const Text(
+                  'Location Service are Disable,Please enable GPS to continue.'),
+              actions: [
+                TextButton(
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      await Geolocator.openAppSettings();
+                    },
+                    child: const Text('Open Settings')),
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Cancel'))
+              ],
+            );
+          });
+      return;
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+                "Location permission denied. Cannot show current location."),
+          ),
+        );
+        return;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      showDialog(
+        // ignore: use_build_context_synchronously
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("Permission Required"),
+          content: const Text(
+              "Location permission is permanently denied. Please enable it in app settings."),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                Navigator.pop(context);
+                await Geolocator.openAppSettings(); // Opens app settings
+              },
+              child: const Text("Open Settings"),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancel"),
+            ),
+          ],
+        ),
+      );
+    }
   }
 }
