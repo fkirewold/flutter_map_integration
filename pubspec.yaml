@@ -11,7 +11,6 @@ dependencies:
   latlong2: ^0.9.1
   flutter_map_location_marker: ^10.0.2
   geolocator: ^13.0.4
-  location: ^8.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
