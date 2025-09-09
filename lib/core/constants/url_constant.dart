@@ -1,0 +1,1 @@
+final String baseOpenStreetMapUrl='https://tile.openstreetmap.org';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map_integration/presentations/street_map-screen.dart';
+import 'package:flutter_map_integration/presentations/street_map_screen.dart';
 
 void main() {
   runApp(MaterialApp(
