@@ -175,7 +175,8 @@ class _StreetMapState extends State<StreetMap> {
                               ? parts.sublist(1).join(',').trim()
                               : '';
                           return ListTile(
-                            title: Text(title),
+                            leading: const Icon(Icons.location_on,color: Colors.grey,),
+                              title: highlightMatch(title, _locationTextController.text),
                             subtitle: Text(
                               subtitle,
                               maxLines: 1,
@@ -201,6 +202,40 @@ class _StreetMapState extends State<StreetMap> {
           ),
         ));
   }
+  Widget highlightMatch(String text, String query) {
+  if (query.isEmpty) return Text(text);
+
+  final queryLower = query.toLowerCase();
+  final textLower = text.toLowerCase();
+
+  final startIndex = textLower.indexOf(queryLower);
+  if (startIndex == -1) return Text(text); // no match found
+
+  final endIndex = startIndex + query.length;
+
+  return RichText(
+    text: TextSpan(
+      children: [
+        TextSpan(
+          text: text.substring(0, startIndex),
+          style: const TextStyle(color: Colors.black),
+        ),
+        TextSpan(
+          text: text.substring(startIndex, endIndex),
+          style: const TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold, // highlight
+          ),
+        ),
+        TextSpan(
+          text: text.substring(endIndex),
+          style: const TextStyle(color: Colors.black),
+        ),
+      ],
+    ),
+  );
+}
+
 
   void _onSearchChanged(String query) async {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
