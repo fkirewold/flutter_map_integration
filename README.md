@@ -9,8 +9,6 @@
 - Basic zoom in/out functionality.
 - Panning and navigation on the map.
 - Search location and find it.
-- 
-<!-- First row -->
 <p float="left" align="center">
   <img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493889.png" width="48%" />
   <img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493896.png" width="48%" />
@@ -18,8 +16,6 @@
 <p float="left" align="center">
   <sub>📍 Map showing current location &nbsp;&nbsp;&nbsp;&nbsp; 🔍 Search bar with suggestions</sub>
 </p>
-
-<!-- Second row -->
 <p float="left" align="center">
   <img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493912.png" width="48%" />
   <img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493977.png" width="48%" />
