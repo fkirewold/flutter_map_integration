@@ -9,11 +9,17 @@
 - Basic zoom in/out functionality.
 - Panning and navigation on the map.
 - Search location and find it.
-  ![App Screenshot](https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493889.png)
-  ![App Screenshot](https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493896.png)
-  ![App Screenshot](https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493912.png)
- ![App Screenshot](https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493977.png)
-  
+<!-- First row: two images side by side -->
+<p float="left">
+  <img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493889.png" width="48%" />
+  <img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493896.png" width="48%" />
+</p>
+
+<!-- Second row: two full-width images -->
+<img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493912.png" width="100%" />
+<br>
+<img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493977.png" width="100%" />
+
 ---
 
 ## 🛠️ Technologies & Packages
