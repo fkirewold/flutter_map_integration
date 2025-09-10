@@ -260,15 +260,34 @@ class _StreetMapState extends State<StreetMap> {
               items: [
                 const PopupMenuItem(
                   value: 'driving',
-                  child: Text('Driving', style: TextStyle(color: Colors.black)),
+                  child: Row(
+                    children: [
+                      Icon(Icons.drive_eta, color: Colors.pinkAccent),
+                      SizedBox(width: 8),
+                      Text('Driving',
+                          style: TextStyle(color: Colors.pinkAccent)),
+                    ],
+                  ),
                 ),
                 const PopupMenuItem(
                   value: 'walking',
-                  child: Text('Walking', style: TextStyle(color: Colors.blue)),
+                  child: Row(
+                    children:  [
+                      Icon(Icons.directions_walk, color: Colors.black),
+                      SizedBox(width: 8),
+                      Text('Walking', style: TextStyle(color: Colors.black)),
+                    ],
+                  ),
                 ),
                 const PopupMenuItem(
                   value: 'cycling',
-                  child: Text('Cycling', style: TextStyle(color: Colors.pink)),
+                  child: Row(
+                    children: [
+                      Icon(Icons.directions_bike, color: Colors.blue),
+                      SizedBox(width: 8),
+                      Text('Cycling', style: TextStyle(color: Colors.blue)),
+                    ],
+                  ),
                 ),
               ],
             );
