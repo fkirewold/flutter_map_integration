@@ -21,7 +21,7 @@
    <img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493977.png" width="48%" />
 </p>
 <p float="left" align="center">
-  <sub><strong>🛣 Route mode selection  &nbsp;&nbsp;&nbsp;&nbsp; 🚴‍♂️Route from current location to destination/strong></sub>
+  <sub><strong>🛣 Route mode selection  &nbsp;&nbsp;&nbsp;&nbsp; 🚴‍♂️Route from current location to destination</strong></sub>
 </p>
 
 ---
