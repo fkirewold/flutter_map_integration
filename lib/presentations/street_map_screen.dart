@@ -20,18 +20,18 @@ class _StreetMapState extends State<StreetMap> {
   LatLng? initialPosition;
   final PlaceService _placeService = PlaceService();
 
-  bool isLoading =true; 
-  List<Map<String,dynamic>> _suggestions=[];
+  bool isLoading = true;
+  List<Map<String, dynamic>> _suggestions = [];
   LatLng? destinationPosition;
-  final TextEditingController _locationTextController=TextEditingController();
-  ValueNotifier<String> textNotifier=ValueNotifier('');
+  final TextEditingController _locationTextController = TextEditingController();
+  ValueNotifier<String> textNotifier = ValueNotifier('');
   Timer? _debounce;
   @override
   void initState() {
     super.initState();
     setInitialPostion();
-    _locationTextController.addListener((){
-      textNotifier.value=_locationTextController.text;
+    _locationTextController.addListener(() {
+      textNotifier.value = _locationTextController.text;
     });
   }
 
@@ -40,7 +40,7 @@ class _StreetMapState extends State<StreetMap> {
     _mapController.dispose();
     _locationTextController.dispose();
     textNotifier.dispose();
-    super.dispose(); 
+    super.dispose();
   }
 
 // void _centerMapOnUser() {
@@ -62,178 +62,199 @@ class _StreetMapState extends State<StreetMap> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Street Map'),
-        backgroundColor: Colors.blue,
-        centerTitle: true,
-      ),
-      body: Stack(
-        children: [
-          FlutterMap(
-              mapController: _mapController,
-              options: MapOptions(
-                initialCenter: isLoading?LatLng(9.00, 38.7):initialPosition!,
-                minZoom: 3,
-              ),
-              children: [
-                TileLayer(
-                  urlTemplate: '$baseOpenStreetMapUrl/{z}/{x}/{y}.png',
-                  //userAgentPackageName: 'com.example.flutter_map_integration',
+        appBar: AppBar(
+          title: Text('Street Map'),
+          backgroundColor: Colors.blue,
+          centerTitle: true,
+        ),
+        body: Stack(
+          children: [
+            FlutterMap(
+                mapController: _mapController,
+                options: MapOptions(
+                  initialCenter:
+                      isLoading ? LatLng(9.00, 38.7) : initialPosition!,
+                  minZoom: 3,
                 ),
-                CurrentLocationLayer(
-                  style: const LocationMarkerStyle(
-                    marker: DefaultLocationMarker(
-                      child: Icon(Icons.location_pin, color: Colors.white),
-                    ),
-                    markerSize: Size(30, 30),
-                    markerDirection: MarkerDirection.heading,
-                  
+                children: [
+                  TileLayer(
+                    urlTemplate: '$baseOpenStreetMapUrl/{z}/{x}/{y}.png',
+                    //userAgentPackageName: 'com.example.flutter_map_integration',
                   ),
-                ),
-              ]),
-         if(isLoading)Center(child: CircularProgressIndicator(color: Colors.blue,),),
-         Column(
-           children: [
-             Container(
-                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                   margin: const EdgeInsets.all(12),
-                   decoration: BoxDecoration(
-                     color: Colors.white,
-                     borderRadius: BorderRadius.circular(30),
-                     boxShadow: [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius: 6,
-                offset: const Offset(0, 2),
-              ),
-                     ],
-                   ),
-                   child: ValueListenableBuilder<String>(
-                     valueListenable: textNotifier,
-                     builder: (context,value,child) {
-              return TextField(
-                controller: _locationTextController,
-                textInputAction:TextInputAction.search,
-                decoration: InputDecoration(
-                  hintText: "Search here...",
-                  prefixIcon: const Icon(Icons.search, color: Colors.blue),
-                  suffixIcon: value.isNotEmpty
-                      ? IconButton(
-                          icon: const Icon(Icons.clear, color: Colors.black),
-                          onPressed: () {
-                            _locationTextController.clear();
-                            setState(() => _suggestions = []);
-                           _debounce?.cancel(); 
-                          },
-                        )
-                      : null,
-                  border: InputBorder.none,
-                ),
-                onChanged: _onSearchChanged,
-                onTapOutside: (event){
-                  FocusScope.of(context).unfocus();
-                },
-                onSubmitted: (value) async{
-                  if(value.isNotEmpty)
-                  {
-                    final LatLng? latLng= await _placeService.destinationCalculator(destination: value);
-                    if(latLng!=null)
-                    {
-                      _mapController.move(latLng, 10);
-                    }
-                  }
-                },
-                   
-              );
-                     }
-                   ),
-                 ),
-                if (_suggestions.isNotEmpty)
-                      Container(
-                        margin: const EdgeInsets.only(top: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: _suggestions.length,
-                          itemBuilder: (context, index) {
-                            final place = _suggestions[index];
-                            return ListTile(
-                              title: Text(place['display_name']),
-                              onTap: () => _onSuggestionTap(place),
-                            );
-                          },
-                        ),
+                  CurrentLocationLayer(
+                    style: const LocationMarkerStyle(
+                      marker: DefaultLocationMarker(
+                        child: Icon(Icons.location_pin, color: Colors.white),
                       ),
-             
-           ],
-         ),
-
-              
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
-        onPressed: (){},
-        child: const Icon(
-          Icons.my_location,
-          color: Colors.white,
-          size: 30,),
-    ));
+                      markerSize: Size(30, 30),
+                      markerDirection: MarkerDirection.heading,
+                    ),
+                  ),
+                ]),
+            if (isLoading)
+              Center(
+                child: CircularProgressIndicator(
+                  color: Colors.blue,
+                ),
+              ),
+            SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(
+                children: [
+                  Container(
+                    padding:
+                        const EdgeInsets.only(left: 12,right: 12, top: 6, bottom: 6),
+                    margin: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(30),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: ValueListenableBuilder<String>(
+                        valueListenable: textNotifier,
+                        builder: (context, value, child) {
+                          return TextField(
+                            controller: _locationTextController,
+                            textInputAction: TextInputAction.search,
+                            decoration: InputDecoration(
+                              hintText: "Search here...",
+                              prefixIcon:
+                                  const Icon(Icons.search, color: Colors.blue),
+                              suffixIcon: value.isNotEmpty
+                                  ? IconButton(
+                                      icon: const Icon(Icons.clear,
+                                          color: Colors.black),
+                                      onPressed: () {
+                                        _locationTextController.clear();
+                                        setState(() => _suggestions = []);
+                                        _debounce?.cancel();
+                                      },
+                                    )
+                                  : null,
+                              border: InputBorder.none,
+                            ),
+                            onChanged: _onSearchChanged,
+                            onTapOutside: (event) {
+                              FocusScope.of(context).unfocus();
+                            },
+                            onSubmitted: (value) async {
+                              if (value.isNotEmpty) {
+                                final LatLng? latLng = await _placeService
+                                    .destinationCalculator(destination: value);
+                                if (latLng != null) {
+                                  _mapController.move(latLng, 10);
+                                }
+                              }
+                            },
+                          );
+                        }),
+                  ),
+                  if (_suggestions.isNotEmpty)
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: _suggestions.length,
+                        itemBuilder: (context, index) {
+                          final place = _suggestions[index];
+                          final fullName = place['display_name'] as String;
+                          // Split by comma to separate main name from details
+                          final parts = fullName.split(',');
+                          final title =
+                              parts.isNotEmpty ? parts.first.trim() : fullName;
+                          final subtitle = parts.length > 1
+                              ? parts.sublist(1).join(',').trim()
+                              : '';
+                          return ListTile(
+                            title: Text(title),
+                            subtitle: Text(
+                              subtitle,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            onTap: () => _onSuggestionTap(place),
+                          );
+                        },
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.blue,
+          onPressed: () {},
+          child: const Icon(
+            Icons.my_location,
+            color: Colors.white,
+            size: 30,
+          ),
+        ));
   }
-    void _onSearchChanged(String query) async {
-        if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+  void _onSearchChanged(String query) async {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
 
     if (query.isEmpty) {
       setState(() => _suggestions = []);
       return;
     }
 
-  _debounce=Timer(const Duration(milliseconds: 800),() async{
- final results = await _placeService.searchPlaces(query);
-    if (mounted) {
-      setState(() {
-        _suggestions = results;
-      });
-    }
+    _debounce = Timer(const Duration(milliseconds: 800), () async {
+      final results = await _placeService.searchPlaces(query);
+      if (mounted) {
+        setState(() {
+          _suggestions = results;
+        });
+      }
     });
-   
   }
+
   void _onSuggestionTap(Map<String, dynamic> place) {
     final lat = double.parse(place['lat']);
     final lon = double.parse(place['lon']);
     final position = LatLng(lat, lon);
     _mapController.move(position, 12);
-  
+
     setState(() {
       _suggestions = [];
       _locationTextController.text = place['display_name'];
-      initialPosition=position;
+      initialPosition = position;
     });
     FocusScope.of(context).unfocus();
   }
+
   Future<void> setInitialPostion() async {
     final Position? pos = await _initLocation();
-    if(pos!=null){
-     await Future.delayed(const Duration(seconds: 3));
-        setState(() {
+    if (pos != null) {
+      await Future.delayed(const Duration(seconds: 3));
+      setState(() {
         initialPosition = LatLng(pos.latitude, pos.longitude);
-        isLoading=false;
+        isLoading = false;
       });
       _mapController.move(initialPosition!, 12);
-    }
-    else{
+    } else {
       setState(() {
-        isLoading=false;
+        isLoading = false;
       });
     }
- 
   }
-  Future<void> setDestinationPostion({required String destinationPlace}) async{
-    destinationPosition=await _placeService.destinationCalculator(destination: destinationPlace);
+
+  Future<void> setDestinationPostion({required String destinationPlace}) async {
+    destinationPosition = await _placeService.destinationCalculator(
+        destination: destinationPlace);
   }
+
   Future<Position?> _initLocation() async {
     bool isServiceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!isServiceEnabled) {

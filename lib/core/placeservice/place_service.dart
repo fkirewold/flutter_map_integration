@@ -37,7 +37,7 @@ return null;
 }
   Future<List<Map<String, dynamic>>> searchPlaces(String query) async {
     final encodedQuery = Uri.encodeComponent(query);
-    final url = 'https://nominatim.openstreetmap.org/search?q=$encodedQuery&format=json&limit=5';
+    final url = 'https://nominatim.openstreetmap.org/search?q=$encodedQuery&format=json&limit=13';
     final response = await _dio.get(url, options: Options(
       headers: {'User-Agent': 'com.example.flutter_map_integration/1.0.0'},
     ));
