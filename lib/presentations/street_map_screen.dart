@@ -25,6 +25,7 @@ class _StreetMapState extends State<StreetMap> {
   LatLng? destinationPosition;
   final TextEditingController _locationTextController = TextEditingController();
   ValueNotifier<String> textNotifier = ValueNotifier('');
+  List<LatLng> routePoints = [];
   Timer? _debounce;
   @override
   void initState() {
@@ -63,159 +64,220 @@ class _StreetMapState extends State<StreetMap> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Street Map'),
+          title: Text('Lucy Map'),
           backgroundColor: Colors.blue,
           centerTitle: true,
         ),
-        body: Stack(
-          children: [
-            FlutterMap(
-                mapController: _mapController,
-                options: MapOptions(
-                  initialCenter:
-                      isLoading ? LatLng(9.00, 38.7) : initialPosition!,
-                  minZoom: 3,
-                ),
-                children: [
-                  TileLayer(
-                    urlTemplate: '$baseOpenStreetMapUrl/{z}/{x}/{y}.png',
-                    //userAgentPackageName: 'com.example.flutter_map_integration',
+        body: SafeArea(
+          child: Stack(
+            children: [
+              FlutterMap(
+                  mapController: _mapController,
+                  options: MapOptions(
+                    initialCenter:
+                        isLoading ? LatLng(9.00, 38.7) : initialPosition!,
+                    minZoom: 3,
                   ),
-                  CurrentLocationLayer(
-                    style: const LocationMarkerStyle(
-                      marker: DefaultLocationMarker(
-                        child: Icon(Icons.location_pin, color: Colors.white),
-                      ),
-                      markerSize: Size(30, 30),
-                      markerDirection: MarkerDirection.heading,
+                  children: [
+                    TileLayer(
+                      urlTemplate: '$baseOpenStreetMapUrl/{z}/{x}/{y}.png',
+                      //userAgentPackageName: 'com.example.flutter_map_integration',
                     ),
-                  ),
-                  MarkerLayer(
-                    markers: [
-                      if (destinationPosition != null)
-                        Marker(
-                          point: destinationPosition!,
-                          width: 40,
-                          height: 40,
-                          child: const Icon(
-                            Icons.place,
-                            color: Colors.red,
-                            size: 40,
+                    CurrentLocationLayer(
+                      style: const LocationMarkerStyle(
+                        showAccuracyCircle: false,
+                        marker: DefaultLocationMarker(
+                          color: Colors.blue,
+                          child: Icon(Icons.location_pin, color: Colors.white),
+                        ),
+                        markerSize: Size(30, 30),
+                        markerDirection: MarkerDirection.heading,
+                      ),
+                    ),
+                    MarkerLayer(
+                      markers: [
+                        if (destinationPosition != null)
+                          Marker(
+                            point: destinationPosition!,
+                            width: 40,
+                            height: 40,
+                            child: const Icon(
+                              Icons.place,
+                              color: Colors.red,
+                              size: 30,
+                            ),
                           ),
-                        ),
-                    ],
-                  ),
-                ]),
-            if (isLoading)
-              Center(
-                child: CircularProgressIndicator(
-                  color: Colors.blue,
-                ),
-              ),
-            SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.only(
-                        left: 12, right: 12, top: 6, bottom: 6),
-                    margin: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(30),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 6,
-                          offset: const Offset(0, 2),
-                        ),
                       ],
                     ),
-                    child: ValueListenableBuilder<String>(
-                        valueListenable: textNotifier,
-                        builder: (context, value, child) {
-                          return TextField(
-                            controller: _locationTextController,
-                            textInputAction: TextInputAction.search,
-                            decoration: InputDecoration(
-                              hintText: "Search here...",
-                              prefixIcon:
-                                  const Icon(Icons.search, color: Colors.blue),
-                              suffixIcon: value.isNotEmpty
-                                  ? IconButton(
-                                      icon: const Icon(Icons.clear,
-                                          color: Colors.black),
-                                      onPressed: () {
-                                        _locationTextController.clear();
-                                        setState(() => _suggestions = []);
-                                        _debounce?.cancel();
-                                      },
-                                    )
-                                  : null,
-                              border: InputBorder.none,
-                            ),
-                            onChanged: _onSearchChanged,
-                            onTapOutside: (event) {
-                              FocusScope.of(context).unfocus();
-                            },
-                            onSubmitted: (value) async {
-                              if (value.isNotEmpty) {
-                                final LatLng? latLng = await _placeService
-                                    .destinationCalculator(destination: value);
-                                if (latLng != null) {
-                                  _mapController.move(latLng, 10);
-                                }
-                              }
-                            },
-                          );
-                        }),
+                    if (routePoints.isNotEmpty)
+                      PolylineLayer(
+                        polylines: [
+                          Polyline(
+                            points: routePoints,
+                            color: Colors
+                                .redAccent.shade700, // Google-like red accent
+                            strokeWidth: 5, // slightly thicker for visibility
+                            pattern: StrokePattern.solid(),
+                          ),
+                        ],
+                      ),
+                  ]),
+              if (isLoading)
+                Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.blue,
                   ),
-                  if (_suggestions.isNotEmpty)
+                ),
+              SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  children: [
                     Container(
+                      height: 50,
+                      padding: const EdgeInsets.only(
+                          left: 12, right: 12, top: 6, bottom: 6),
+                      margin: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(30),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: _suggestions.length,
-                        itemBuilder: (context, index) {
-                          final place = _suggestions[index];
-                          final fullName = place['display_name'] as String;
-                          // Split by comma to separate main name from details
-                          final parts = fullName.split(',');
-                          final title =
-                              parts.isNotEmpty ? parts.first.trim() : fullName;
-                          final subtitle = parts.length > 1
-                              ? parts.sublist(1).join(',').trim()
-                              : '';
-                          return ListTile(
-                            leading: const Icon(
-                              Icons.location_on_outlined,
-                              size: 25,
-                              color: Colors
-                                  .black54, // subtle black like Google Maps
-                            ),
-                            title: highlightMatch(
-                                title, _locationTextController.text),
-                            subtitle: Text(
-                              subtitle,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            onTap: () => _onSuggestionTap(place),
-                          );
-                        },
-                      ),
+                      child: ValueListenableBuilder<String>(
+                          valueListenable: textNotifier,
+                          builder: (context, value, child) {
+                            return Center(
+                              child: TextField(
+                                controller: _locationTextController,
+                                textInputAction: TextInputAction.search,
+                                decoration: InputDecoration(
+                                  hintText: "Search here...",
+                                  prefixIcon: const Icon(Icons.search,
+                                      color: Colors.blue),
+                                  suffixIcon: value.isNotEmpty
+                                      ? IconButton(
+                                          icon: const Icon(Icons.clear,
+                                              color: Colors.black),
+                                          onPressed: () {
+                                            _locationTextController.clear();
+                                            setState(() {
+                                              _suggestions = [];
+                                              destinationPosition = null;
+                                              routePoints = [];
+                                            });
+                                            _debounce?.cancel();
+                                          },
+                                        )
+                                      : null,
+                                  border: InputBorder.none,
+                                ),
+                                onChanged: _onSearchChanged,
+                                onTapOutside: (event) {
+                                  FocusScope.of(context).unfocus();
+                                },
+                                onSubmitted: (value) async {
+                                  if (value.isNotEmpty) {
+                                    final LatLng? latLng = await _placeService
+                                        .destinationCalculator(
+                                            destination: value);
+                                    if (latLng != null) {
+                                      _mapController.move(latLng, 10);
+                                    }
+                                  }
+                                },
+                              ),
+                            );
+                          }),
                     ),
-                ],
+                    if (_suggestions.isNotEmpty)
+                      Container(
+                        height: MediaQuery.of(context).size.height,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: _suggestions.length,
+                          itemBuilder: (context, index) {
+                            final place = _suggestions[index];
+                            final fullName = place['display_name'] as String;
+                            // Split by comma to separate main name from details
+                            final parts = fullName.split(',');
+                            final title = parts.isNotEmpty
+                                ? parts.first.trim()
+                                : fullName;
+                            final subtitle = parts.length > 1
+                                ? parts.sublist(1).join(',').trim()
+                                : '';
+                            return ListTile(
+                              leading: const Icon(
+                                Icons.location_on_outlined,
+                                size: 25,
+                                color: Colors
+                                    .black54, // subtle black like Google Maps
+                              ),
+                              title: highlightMatch(
+                                  title, _locationTextController.text),
+                              subtitle: Text(
+                                subtitle,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              trailing: const Icon(
+                                Icons
+                                    .arrow_outward_outlined, // Google Maps-like small arrow
+                                color: Colors.grey,
+                                size: 30,
+                              ),
+                              onTap: () => _onSuggestionTap(place),
+                            );
+                          },
+                        ),
+                      ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.blue,
-          onPressed: () {},
+          onPressed: () async {
+            final selectedMode = await showMenu<String>(
+              context: context,
+              position: RelativeRect.fromLTRB(
+                MediaQuery.of(context).size.width - 100, // x
+                MediaQuery.of(context).size.height - 150, // y
+                0,
+                0,
+              ),
+              items: [
+                const PopupMenuItem(
+                  value: 'driving',
+                  child: Text('Driving', style: TextStyle(color: Colors.black)),
+                ),
+                const PopupMenuItem(
+                  value: 'walking',
+                  child: Text('Walking', style: TextStyle(color: Colors.blue)),
+                ),
+                const PopupMenuItem(
+                  value: 'cycling',
+                  child: Text('Cycling', style: TextStyle(color: Colors.pink)),
+                ),
+              ],
+            );
+
+            if (selectedMode != null) {
+              // Call your showRoute or getBestRoutePoints with the selected mode
+              await showRoute(routeMode: selectedMode);
+            }
+          },
           child: const Icon(
             Icons.my_location,
             color: Colors.white,
@@ -260,11 +322,36 @@ class _StreetMapState extends State<StreetMap> {
     );
   }
 
+  Future<void> showRoute({required String routeMode}) async {
+    if (destinationPosition != null && initialPosition != null) {
+      // fetch the route points first
+      final bestPoints = await _placeService.getBestRoutePoints(
+        initialPosition: initialPosition!,
+        destinationPosition: destinationPosition!,
+        routeMode: routeMode,
+      );
+
+      if (bestPoints.isNotEmpty) {
+        setState(() {
+          routePoints = bestPoints;
+          // Fit the map camera to the route
+          var bounds = LatLngBounds.fromPoints(routePoints);
+          _mapController.fitCamera(
+            CameraFit.bounds(bounds: bounds, padding: const EdgeInsets.all(50)),
+          );
+        });
+      }
+    }
+  }
+
   void _onSearchChanged(String query) async {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
 
     if (query.isEmpty) {
-      setState(() => _suggestions = []);
+      setState(() {
+        _suggestions = [];
+        destinationPosition = null;
+      });
       return;
     }
 
