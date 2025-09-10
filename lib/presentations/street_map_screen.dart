@@ -90,6 +90,21 @@ class _StreetMapState extends State<StreetMap> {
                       markerDirection: MarkerDirection.heading,
                     ),
                   ),
+                  MarkerLayer(
+                    markers: [
+                      if (destinationPosition != null)
+                        Marker(
+                          point: destinationPosition!,
+                          width: 40,
+                          height: 40,
+                          child: const Icon(
+                            Icons.place,
+                            color: Colors.red,
+                            size: 40,
+                          ),
+                        ),
+                    ],
+                  ),
                 ]),
             if (isLoading)
               Center(
@@ -272,7 +287,7 @@ class _StreetMapState extends State<StreetMap> {
     setState(() {
       _suggestions = [];
       _locationTextController.text = place['display_name'];
-      initialPosition = position;
+      destinationPosition = position;
     });
     FocusScope.of(context).unfocus();
   }
