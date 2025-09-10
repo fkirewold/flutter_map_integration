@@ -13,8 +13,8 @@
   <img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493889.png" width="48%" />
    <img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493912.png" width="48%" />
 </p>
-<p float="left" align="center">
-  <sub>📍 Map showing current location &nbsp;&nbsp;&nbsp;&nbsp; 🔍 Search bar with suggestions</sub>
+<p float="left" align="center" style="font-weight:bold; text-transform:uppercase;">
+ 📍 Map showing current location &nbsp;&nbsp;&nbsp;&nbsp; 🔍 Search bar with suggestions
 </p>
 <p float="left" align="center">
   <img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493896.png" width="48%" />
