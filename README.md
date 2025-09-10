@@ -10,29 +10,23 @@
 - Panning and navigation on the map.
 - Search location and find it.
 - 
+<!-- First row -->
 <p float="left" align="center">
   <img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493889.png" width="48%" />
-  <br>
-  <sub>📍 Map showing current location</sub>
+  <img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493896.png" width="48%" />
 </p>
 <p float="left" align="center">
-  <img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493896.png" width="48%" />
-  <br>
-  <sub>🔍 Search bar with suggestions</sub>
+  <sub>📍 Map showing current location &nbsp;&nbsp;&nbsp;&nbsp; 🔍 Search bar with suggestions</sub>
 </p>
 
-<!-- Second row: next two images side by side with captions -->
+<!-- Second row -->
 <p float="left" align="center">
   <img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493912.png" width="48%" />
-  <br>
-  <sub>🛣 Route from current location to destination</sub>
+  <img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493977.png" width="48%" />
 </p>
 <p float="left" align="center">
-  <img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493977.png" width="48%" />
-  <br>
-  <sub>🚴‍♂️ Route mode selection: walking/driving/cycling</sub>
+  <sub>🛣 Route from current location to destination &nbsp;&nbsp;&nbsp;&nbsp; 🚴‍♂️ Route mode selection</sub>
 </p>
-
 
 ---
 
