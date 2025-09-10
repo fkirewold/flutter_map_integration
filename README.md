@@ -11,14 +11,14 @@
 - Search location and find it.
 <p float="left" align="center">
   <img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493889.png" width="48%" />
-  <img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493896.png" width="48%" />
+   <img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493912.png" width="48%" />
 </p>
 <p float="left" align="center">
   <sub>📍 Map showing current location &nbsp;&nbsp;&nbsp;&nbsp; 🔍 Search bar with suggestions</sub>
 </p>
 <p float="left" align="center">
-  <img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493912.png" width="48%" />
   <img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493977.png" width="48%" />
+  <img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493896.png" width="48%" />
 </p>
 <p float="left" align="center">
   <sub>🛣 Route from current location to destination &nbsp;&nbsp;&nbsp;&nbsp; 🚴‍♂️ Route mode selection</sub>
