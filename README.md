@@ -8,7 +8,7 @@
 - Show user's current location on the map.
 - Basic zoom in/out functionality.
 - Panning and navigation on the map.
-- Training project to understand map integration in Flutter.
+- Search location and find it.
 
 ---
 
