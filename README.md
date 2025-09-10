@@ -20,8 +20,8 @@
   <img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493896.png" width="48%" />
    <img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493977.png" width="48%" />
 </p>
-<p float="left" align="center">
-  <sub>**🛣 Route mode selection  &nbsp;&nbsp;&nbsp;&nbsp; 🚴‍♂️Route from current location to destination**</sub>
+<p float="left" align="center" style="font-weight:bold; text-transform:uppercase;">
+  🛣 Route mode selection &nbsp;&nbsp;&nbsp;&nbsp; 🚴‍♂️ Route from current location to destination
 </p>
 
 ---
