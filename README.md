@@ -10,15 +10,15 @@
 - Panning and navigation on the map.
 - Search location and find it.
 <p float="left" align="center">
-  <img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493889.png" width="48%" />
-   <img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493912.png" width="48%" />
+  <img src="assets/images/readme/Screenshot_1757493889.png" width="48%" />
+   <img src="assets/images/readme/Screenshot_1757493912.png" width="48%" />
 </p>
 <p float="left" align="center" style="font-weight:bold; text-transform:uppercase;">
  📍 Map showing current location &nbsp;&nbsp;&nbsp;&nbsp; 🔍 Search bar with suggestions
 </p>
 <p float="left" align="center">
-  <img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493896.png" width="48%" />
-   <img src="https://github.com/fkirewold/flutter_map_integration/blob/main/Screenshot_1757493977.png" width="48%" />
+  <img src="assets/images/readme/Screenshot_1757493896.png" width="48%" />
+   <img src="assets/images/readme/Screenshot_1757493977.png" width="48%" />
 </p>
 <p float="left" align="center" style="font-weight:bold; text-transform:uppercase;">
   🛣 Route mode selection &nbsp;&nbsp;&nbsp;&nbsp; 🚴‍♂️ Route from current location to destination
