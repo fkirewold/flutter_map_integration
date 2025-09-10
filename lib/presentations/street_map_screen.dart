@@ -84,6 +84,15 @@ class _StreetMapState extends State<StreetMap> {
                       //userAgentPackageName: 'com.example.flutter_map_integration',
                     ),
                     CurrentLocationLayer(
+                      positionStream: Geolocator.getPositionStream(
+                        locationSettings: const LocationSettings(
+                          accuracy: LocationAccuracy.best,
+                          distanceFilter: 5,
+                        ),
+                      ).map((position) => LocationMarkerPosition(
+                          latitude: position.latitude,
+                          longitude: position.longitude,
+                          accuracy: position.accuracy)),
                       style: const LocationMarkerStyle(
                         showAccuracyCircle: false,
                         marker: DefaultLocationMarker(
@@ -272,7 +281,7 @@ class _StreetMapState extends State<StreetMap> {
                 const PopupMenuItem(
                   value: 'walking',
                   child: Row(
-                    children:  [
+                    children: [
                       Icon(Icons.directions_walk, color: Colors.black),
                       SizedBox(width: 8),
                       Text('Walking', style: TextStyle(color: Colors.black)),
